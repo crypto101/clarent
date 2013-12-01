@@ -18,5 +18,5 @@ afterwards, since it's the other side of the Arthur-Merlin protocol. I
 decided to keep the trend; Clarent was King Arthur's ceremonial sword.
 
 .. _merlin: https://github.com/crypto101/merlin
-.. _arthur: https://github.com/crypto101/merlin
+.. _arthur: https://github.com/crypto101/arthur
 .. _`Arthur-Merlin protocols`: https://en.wikipedia.org/wiki/Merlin-Arthur_protocol
