@@ -1,0 +1,9 @@
+# Test runner
+twisted
+
+# Coverage
+coverage
+
+# Debugging
+pudb
+ipython
