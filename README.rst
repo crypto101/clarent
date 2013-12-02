@@ -8,6 +8,18 @@ clarent is the home of the shared parts between merlyn_ and arthur_.
 It is built as part of Crypto 101, the introductory book on
 cryptography.
 
+Changelog
+=========
+
+0.0.1
+-----
+
+Initial version; includes the usual tox-based CI stuff.
+
+Features:
+
+- Exercise API AMP commands and exceptions, with tests, from merlin
+
 Whence the name?
 ================
 
@@ -24,15 +36,3 @@ Arthur's ceremonial sword.
 .. _merlyn: https://github.com/crypto101/merlyn
 .. _arthur: https://github.com/crypto101/arthur
 .. _`Arthur-Merlin protocols`: https://en.wikipedia.org/wiki/Merlin-Arthur_protocol
-
-Changelog
-=========
-
-0.0.1 (WIP)
------------
-
-Initial version; includes the usual tox-based CI stuff.
-
-Features:
-
-- Exercise API AMP commands and exceptions, with tests, from merlin
