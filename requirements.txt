@@ -1,2 +1,2 @@
-twisted
-txampext
+twisted==12.3.0
+txampext==0.0.10
