@@ -5,39 +5,54 @@ from twisted.protocols import amp
 from txampext.errors import Error
 
 
-class UnknownStep(Error):
-    """
-    The step for which a submission was made was not recognized.
-    """
+class UnknownExercise(Error):
+    """The exercise was not recognized.
 
-
-
-class WrongStep(Error):
-    """
-    The step for which a submission was made was recognized, but the
-    user was not on that step of the exercise.
-
-    This can occur when a user accidentally submits something for a
-    step they had previously submitted something for.
     """
 
 
 
-class IncorrectSubmission(Error):
+class GetExercises(amp.Command):
     """
-    The submission was understood, but incorrect.
+    Gets the identifiers and titles of some exercises.
     """
-
-
-
-class Submit(amp.Command):
     arguments = [
-        (b"step", amp.Integer()),
-        (b"submission", amp.String())
+        (b"solved", amp.Boolean())
+    ]
+    response = [
+        (b"exercises", amp.AmpList([
+            (b"identifier", amp.String()),
+            (b"title", amp.Unicode())
+        ]))
+    ]
+
+
+
+class GetExerciseDetails(amp.Command):
+    """
+    Gets the details of a partiucular exercise.
+    """
+    arguments = [
+        (b"identifier", amp.String())
+    ]
+    response = [
+        (b"title", amp.Unicode()),
+        (b"description", amp.Unicode()),
+        (b"solved", amp.Boolean())
+    ]
+    errors = dict([
+        UnknownExercise.asAMP()
+    ])
+
+
+
+class NotifySolved(amp.Command):
+    """Notify the client that they have solved an exercise.
+
+    """
+    arguments = [
+        (b"identifier", amp.String()),
+        (b"title", amp.Unicode())
     ]
     response = []
-    errors = dict([
-        IncorrectSubmission.asAMP(),
-        UnknownStep.asAMP(),
-        WrongStep.asAMP()
-    ])
+    requiresAnswer = False
