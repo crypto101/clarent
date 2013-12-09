@@ -11,12 +11,13 @@ cryptography.
 Changelog
 =========
 
-0.0.2 (WIP)
------------
+0.0.2
+-----
 
 Drastically simplified exercise interface: no more multiple steps,
 just rendering and asynchronous notification when they've been
-completed. Completion happens out-of-band.
+completed. Completion happens out-of-band: users are asynchronously
+notified when that happens.
 
 0.0.1
 -----
