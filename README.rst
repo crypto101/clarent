@@ -11,6 +11,11 @@ cryptography.
 Changelog
 =========
 
+0.0.4
+-----
+
+Fixes for the tests of the auth API.
+
 0.0.3
 -----
 
