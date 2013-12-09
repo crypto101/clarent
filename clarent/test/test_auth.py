@@ -4,10 +4,11 @@ from twisted.trial.unittest import SynchronousTestCase
 
 
 class RegisterTests(CommandTestMixin, SynchronousTestCase):
-    argumentStrings = argumentObjects = [
-        (b"email", b"xyzzy")
-    ]
-    responseStrings = responseObjects = []
+    command = auth.Register
+    argumentStrings = argumentObjects = {
+        b"email": b"xyzzy"
+    }
+    responseStrings = responseObjects = {}
     errors = dict([
         auth.NotRegistered.asAMP(),
         auth.AlreadyRegistered.asAMP(),
