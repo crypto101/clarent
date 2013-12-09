@@ -11,6 +11,11 @@ cryptography.
 Changelog
 =========
 
+0.0.3
+-----
+
+New TOFU-POP auth API.
+
 0.0.2
 -----
 
