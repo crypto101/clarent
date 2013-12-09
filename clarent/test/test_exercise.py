@@ -27,13 +27,14 @@ class GetExercisesTests(SynchronousTestCase, CommandTestMixin):
     P_CLOUD = "\x03" + u"\N{CLOUD}".encode("utf-8")
 
     responseStrings = {
-        b"exercises": (
-            NUL + P_IDENTIFIER + NUL + "\x01" + "a"
-            + NUL + P_TITLE + NUL + P_SNOWMAN + NUL
-            + NUL
-            + NUL + P_IDENTIFIER + NUL + "\x01" + "b"
-            + NUL + P_TITLE + NUL + P_CLOUD + NUL
-            + NUL)
+        b"exercises": b"".join([
+            NUL, P_IDENTIFIER, NUL, "\x01", "a",
+            NUL, P_TITLE, NUL, P_SNOWMAN, NUL,
+            NUL,
+            NUL, P_IDENTIFIER, NUL, "\x01", "b",
+            NUL, P_TITLE, NUL, P_CLOUD, NUL,
+            NUL
+        ])
     }
     errors = fatalErrors = {}
     requiresAnswer = True
