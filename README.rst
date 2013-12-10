@@ -11,6 +11,13 @@ cryptography.
 Changelog
 =========
 
+0.0.5
+-----
+
+- Removed the authentication API; all authentication is now done using
+  TLS certificates.
+- Added tools for making TLS keys and certificates.
+
 0.0.4
 -----
 
