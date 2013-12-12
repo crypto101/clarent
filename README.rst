@@ -11,6 +11,19 @@ cryptography.
 Changelog
 =========
 
+0.0.6
+-----
+
+Bugfix: clarent no longer produces certificates without validity
+periods (``notBefore`` and ``notAfter``). While silently dumping these
+certs to disk appeared to succeed (yay, OpenSSL!), the produced file
+would blow up any tool trying to read it, be it PyOpenSSL or the
+``openssl x509`` command line tool.
+
+This bug was fixed by adding ``notBefore`` and ``notAfter``. A unit
+test was added that does nothing but dump and load the produced
+certificate as well.
+
 0.0.5
 -----
 

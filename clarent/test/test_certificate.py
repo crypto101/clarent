@@ -1,4 +1,5 @@
 from clarent.certificate import makeCertificate, generateKey
+from datetime import datetime
 from inspect import getargspec
 from OpenSSL.crypto import PKey, TYPE_RSA, load_privatekey
 from OpenSSL.crypto import dump_certificate, load_certificate, FILETYPE_PEM
@@ -66,14 +67,24 @@ class CertificateTests(SynchronousTestCase):
     """
     def test_makeCertificate(self):
         """A produced certificate has the appropriate common name and e-mail
-        address, and is self-signed with the given key and SHA-512.
+        address, and is self-signed with the given key and SHA-512. It
+        is currently valid, is not valid before today at midnight Zulu
+        time, and is valid until the same date at midnight five years
+        from now.
 
         """
-        cert = makeCertificate(testKey, u"test@example.com")
+        def utcnow():
+            return datetime(2000, 1, 10, 18, 12)
+
+        cert = makeCertificate(testKey, u"test@example.com", _utcnow=utcnow)
 
         subj = cert.get_subject()
         self.assertEqual(subj.CN, u"Crypto 101 Client")
         self.assertEqual(subj.emailAddress, u"test@example.com")
+
+        self.assertFalse(cert.has_expired())
+        self.assertEqual(cert.get_notBefore(), "20000110000000Z")
+        self.assertEqual(cert.get_notAfter(), "20050110000000Z")
 
         self.assertEqual(cert.get_issuer(), cert.get_subject())
         self.assertEqual(cert.get_signature_algorithm(),
