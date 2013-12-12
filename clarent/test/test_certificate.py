@@ -1,6 +1,7 @@
 from clarent.certificate import makeCertificate, generateKey
 from inspect import getargspec
-from OpenSSL.crypto import PKey, TYPE_RSA, load_privatekey, FILETYPE_PEM
+from OpenSSL.crypto import PKey, TYPE_RSA, load_privatekey
+from OpenSSL.crypto import dump_certificate, load_certificate, FILETYPE_PEM
 from twisted.trial.unittest import SynchronousTestCase
 
 
@@ -77,3 +78,12 @@ class CertificateTests(SynchronousTestCase):
         self.assertEqual(cert.get_issuer(), cert.get_subject())
         self.assertEqual(cert.get_signature_algorithm(),
                          "sha512WithRSAEncryption")
+
+
+    def test_certificateRoundtrip(self):
+        """A certificate can be dumped to a string and read again.
+
+        """
+        cert = makeCertificate(testKey, u"test@example.com")
+        data = dump_certificate(FILETYPE_PEM, cert)
+        load_certificate(FILETYPE_PEM, data)
