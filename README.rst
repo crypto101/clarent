@@ -11,6 +11,11 @@ cryptography.
 Changelog
 =========
 
+0.0.7 (WIP)
+-----------
+
+- Added ``clarent.path``, gets data paths where you can dump some stuff.
+
 0.0.6
 -----
 
