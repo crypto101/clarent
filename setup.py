@@ -30,7 +30,6 @@ setup(name=packageName,
 
       packages=find_packages(),
       test_suite=packageName + ".test",
-      setup_requires=['tox'],
       cmdclass={'test': Tox},
       zip_safe=True,
 
