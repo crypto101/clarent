@@ -11,11 +11,12 @@ cryptography.
 Changelog
 =========
 
-0.0.7 (WIP)
------------
+0.0.7
+-----
 
 - Added ``clarent.path``, gets data paths where you can dump some stuff.
-- ``getContextFactory`` and ``makeCredentials`` are now citizens of ``clarent.certificate``.
+- ``getContextFactory`` and ``makeCredentials`` are now citizens of
+  ``clarent.certificate``.
 
 0.0.6
 -----
