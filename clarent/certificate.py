@@ -1,11 +1,13 @@
 """
 Tools for creating certificates.
 """
-from OpenSSL.crypto import PKey, TYPE_RSA, X509
 from datetime import datetime
+from OpenSSL.crypto import PKey, X509, dump_privatekey, dump_certificate
+from OpenSSL.crypto import TYPE_RSA, FILETYPE_PEM
+from twisted.internet.ssl import PrivateCertificate
 
 
-def makeCertificate(key, email, _utcnow=datetime.utcnow):
+def _makeCertificate(key, email, _utcnow=datetime.utcnow):
     """Make the certificate for the given key and e-mail address.
 
     """
@@ -35,10 +37,34 @@ def makeCertificate(key, email, _utcnow=datetime.utcnow):
 _ASN1_GENERALIZEDTIME_FORMAT = "%Y%m%d%H%M%SZ"
 
 
-def generateKey(_PKey=PKey):
+def _generateKey(_PKey=PKey):
     """Generate a 4096-bit RSA key.
 
     """
     key = _PKey()
     key.generate_key(TYPE_RSA, 4096)
     return key
+
+
+def makeCredentials(path, email):
+    """Make credentials from given e-mail address and store them in the
+    directory at path.
+
+    """
+    key = _generateKey()
+    cert = _makeCertificate(key, email)
+
+    with path.child("client.pem").open("wb") as pemFile:
+        pemFile.write(dump_privatekey(FILETYPE_PEM, key))
+        pemFile.write(dump_certificate(FILETYPE_PEM, cert))
+
+
+
+def getContextFactory(path):
+    """Get a context factory from keys already stored at path.
+
+    """
+    with path.child("client.pem").open() as pemFile:
+        cert = PrivateCertificate.loadPEM(pemFile.read())
+
+    return cert.options() # TODO: verify server cert (see #1)

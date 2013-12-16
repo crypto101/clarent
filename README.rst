@@ -15,6 +15,7 @@ Changelog
 -----------
 
 - Added ``clarent.path``, gets data paths where you can dump some stuff.
+- ``getContextFactory`` and ``makeCredentials`` are now citizens of ``clarent.certificate``.
 
 0.0.6
 -----

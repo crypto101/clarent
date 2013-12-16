@@ -1,9 +1,9 @@
-from clarent.certificate import makeCertificate, generateKey
+from clarent import certificate
 from datetime import datetime
 from inspect import getargspec
-from OpenSSL.crypto import PKey, TYPE_RSA, load_privatekey
-from OpenSSL.crypto import dump_certificate, load_certificate, FILETYPE_PEM
+from OpenSSL import crypto
 from twisted.trial.unittest import SynchronousTestCase
+from twisted.python.filepath import FilePath
 
 
 class FakePKey(object):
@@ -23,17 +23,17 @@ class KeyGenerationTests(SynchronousTestCase):
         """The key generation routine uses PKey by default.
 
         """
-        argspec = getargspec(generateKey)
+        argspec = getargspec(certificate._generateKey)
         default = argspec.defaults[argspec.args.index("_PKey")]
-        self.assertIdentical(default, PKey)
+        self.assertIdentical(default, crypto.PKey)
 
 
     def test_generateKey(self):
         """The key generation routine generates 4096-bit RSA keys.
 
         """
-        key = generateKey(_PKey=FakePKey)
-        self.assertIdentical(key.keyType, TYPE_RSA)
+        key = certificate._generateKey(_PKey=FakePKey)
+        self.assertIdentical(key.keyType, crypto.TYPE_RSA)
         self.assertEqual(key.keyLength, 4096)
 
 
@@ -57,7 +57,7 @@ XG/QVpRy0yQ5znVgpLIdAkAf3raH4V8YkWcvJvP5HmFOZTF+oHIxewpQfF+ebhxP
 6ZLFNssSL/XpWiwQKWi2NmZP30VKC+zhUByT7y+qxg4J
 -----END RSA PRIVATE KEY-----
 """
-testKey = load_privatekey(FILETYPE_PEM, pemTestKey)
+testKey = crypto.load_privatekey(crypto.FILETYPE_PEM, pemTestKey)
 
 
 
@@ -76,7 +76,8 @@ class CertificateTests(SynchronousTestCase):
         def utcnow():
             return datetime(2000, 1, 10, 18, 12)
 
-        cert = makeCertificate(testKey, u"test@example.com", _utcnow=utcnow)
+        cert = certificate._makeCertificate(
+            testKey, u"test@example.com", _utcnow=utcnow)
 
         subj = cert.get_subject()
         self.assertEqual(subj.CN, u"Crypto 101 Client")
@@ -95,6 +96,20 @@ class CertificateTests(SynchronousTestCase):
         """A certificate can be dumped to a string and read again.
 
         """
-        cert = makeCertificate(testKey, u"test@example.com")
-        data = dump_certificate(FILETYPE_PEM, cert)
-        load_certificate(FILETYPE_PEM, data)
+        cert = certificate._makeCertificate(testKey, u"test@example.com")
+        data = crypto.dump_certificate(crypto.FILETYPE_PEM, cert)
+        crypto.load_certificate(crypto.FILETYPE_PEM, data)
+
+
+
+class MakeCredentialsTests(SynchronousTestCase):
+    def test_makeCredentials(self):
+        path = FilePath(self.mktemp())
+        path.makedirs()
+
+        self.assertRaises(IOError, certificate.getContextFactory, path)
+
+        self.patch(certificate, "_generateKey", lambda: testKey)
+        certificate.makeCredentials(path, u"test@example.com")
+
+        certificate.getContextFactory(path)
