@@ -74,7 +74,8 @@ def getContextFactory(path):
 
 
 class SecureCiphersContextFactory(object):
-    """A context factory to limit SSL/TLS connections to secure ciphersuites.
+    """A context factory to limit SSL/TLS connections to secure
+    ciphersuites.
 
     This wraps another context factory. When asked for a context, it
     asks the wrapped context factory for one, and then limits the
