@@ -67,4 +67,48 @@ def getContextFactory(path):
     with path.child("client.pem").open() as pemFile:
         cert = PrivateCertificate.loadPEM(pemFile.read())
 
-    return cert.options() # TODO: verify server cert (see #1)
+    certOptions = cert.options() # TODO: verify server cert (see #1)
+    ctxFactory = SecureCiphersContextFactory(certOptions)
+    return ctxFactory
+
+
+
+class SecureCiphersContextFactory(object):
+    """A context factory to limit SSL/TLS connections to secure ciphersuites.
+
+    This wraps another context factory. When asked for a context, it
+    asks the wrapped context factory for one, and then limits the
+    context factory to only using secure ciphersuites.
+
+    """
+    def __init__(self, ctxFactory):
+        self.ctxFactory = ctxFactory
+
+
+    def getContext(self):
+        ctx = self.ctxFactory.getContext()
+        ctx.set_cipher_list(ciphersuites)
+        return ctx
+
+
+
+# Ciphersuites, based on Qualys' SSL/TLS Deployment Best Practices
+# https://www.ssllabs.com/downloads/SSL_TLS_Deployment_Best_Practices_1.3.pdf
+# Exceptions: Our RSA keys are bigger than recommended (4096 vs 2048).
+# Since we can multiplex everything over a single connection, this
+# doesn't really matter as much. Also, GCM is not as preferred,
+# because GHASH is apparently very hard to implement without leaking
+# timing information.
+ciphersuites = ":".join((
+    # Fast, PFS, secure. Yay!
+    "ECDHE-RSA-AES128-SHA", "ECDHE-ECDSA-AES128-SHA",
+    # SHA-256 (equal to SHA-1, in HMAC construction)
+    "ECDHE-RSA-AES128-SHA256", "ECDHE-ECDSA-AES128-SHA256",
+    # GCM last (due to timing vulns in most GHASH implementations)
+    "ECDHE-RSA-AES128-GCM-SHA256", "ECDHE-ECDSA-AES128-GCM-SHA256",
+
+    # Same spiel, except with ECDHE -> DHE:
+    "DHE-RSA-AES128-SHA", "DHE-ECDSA-AES128-SHA",
+    "DHE-RSA-AES128-SHA256", "DHE-ECDSA-AES128-SHA256",
+    "DHE-RSA-AES128-GCM-SHA256", "DHE-ECDSA-AES128-GCM-SHA256",
+))
