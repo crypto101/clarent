@@ -11,6 +11,12 @@ cryptography.
 Changelog
 =========
 
+0.0.8
+-----
+
+Added an SSL context factory that wraps other context factories, but
+limits them to secure ciphers.
+
 0.0.7
 -----
 
