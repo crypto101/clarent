@@ -8,7 +8,8 @@ from twisted.internet.ssl import PrivateCertificate
 
 
 def _makeCertificate(key, email, _utcnow=datetime.utcnow):
-    """Make the certificate for the given key and e-mail address.
+    """Make the certificate for the client using the given key and e-mail
+    address.
 
     """
     # Create a certificate for this key.
@@ -47,8 +48,8 @@ def _generateKey(_PKey=PKey):
 
 
 def makeCredentials(path, email):
-    """Make credentials from given e-mail address and store them in the
-    directory at path.
+    """Make credentials for the client from given e-mail address and store
+    them in the directory at path.
 
     """
     key = _generateKey()
@@ -61,7 +62,8 @@ def makeCredentials(path, email):
 
 
 def getContextFactory(path):
-    """Get a context factory from keys already stored at path.
+    """Get a context factory for the client from keys already stored at
+    path.
 
     """
     with path.child("client.pem").open() as pemFile:
