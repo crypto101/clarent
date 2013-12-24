@@ -103,13 +103,35 @@ class CertificateTests(SynchronousTestCase):
 
 
 class MakeCredentialsTests(SynchronousTestCase):
-    def test_makeCredentials(self):
-        path = FilePath(self.mktemp())
-        path.makedirs()
-
-        self.assertRaises(IOError, certificate.getContextFactory, path)
-
+    def setUp(self):
+        self.path = FilePath(self.mktemp())
+        self.path.makedirs()
         self.patch(certificate, "_generateKey", lambda: testKey)
-        certificate.makeCredentials(path, u"test@example.com")
 
-        certificate.getContextFactory(path)
+
+    def _makeCredentials(self):
+        return certificate.makeCredentials(self.path, u"test@example.test")
+
+
+    def test_makeCredentials(self):
+        """Making credentials creates a key with matching certificate and
+        writes it to disk under the given path.
+
+        """
+        self.assertRaises(IOError, certificate.getContextFactory, self.path)
+        self._makeCredentials()
+        certificate.getContextFactory(self.path)
+
+
+    def test_makeCredentialsMultipleTimes(self):
+        """Attempting to generate credentials when the credentials file
+        exists already raises OSError.
+
+        """
+        self.assertRaises(IOError, certificate.getContextFactory, self.path)
+
+        self._makeCredentials()
+        certificate.getContextFactory(self.path)
+
+        self.assertRaises(OSError, self._makeCredentials)
+        certificate.getContextFactory(self.path)

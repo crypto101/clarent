@@ -11,6 +11,14 @@ cryptography.
 Changelog
 =========
 
+0.0.9
+-----
+
+Calling ``makeCredentials`` when the credentials already exists now
+raises an exception; previously, the old credentials were silently
+overwritten. This wasn't an issue due to the way callers used this
+function previously, but can be an issue for future implementations.
+
 0.0.8
 -----
 

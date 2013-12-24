@@ -55,7 +55,10 @@ def makeCredentials(path, email):
     key = _generateKey()
     cert = _makeCertificate(key, email)
 
-    with path.child("client.pem").open("wb") as pemFile:
+    certPath = path.child("client.pem")
+    certPath.alwaysCreate = True
+
+    with certPath.open("wb") as pemFile:
         pemFile.write(dump_privatekey(FILETYPE_PEM, key))
         pemFile.write(dump_certificate(FILETYPE_PEM, cert))
 
