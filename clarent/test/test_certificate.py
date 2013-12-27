@@ -245,10 +245,10 @@ class CiphersuiteTests(SynchronousTestCase):
         """
         self.assertPreferred("ECDHE-RSA-AES128-SHA256",
                              "ECDHE-RSA-AES128-GCM-SHA256")
-        self.assertPreferred("ECDHE-ECDSA-AES128-GCM-SHA256",
+        self.assertPreferred("ECDHE-ECDSA-AES128-SHA256",
                              "ECDHE-ECDSA-AES128-GCM-SHA256")
 
         self.assertPreferred("DHE-ECDSA-AES128-SHA256",
                              "DHE-ECDSA-AES128-GCM-SHA256")
-        self.assertPreferred("DHE-RSA-AES128-GCM-SHA256",
-                             "DHE-RSA-AES128-SHA256")
+        self.assertPreferred("DHE-RSA-AES128-SHA256",
+                             "DHE-RSA-AES128-GCM-SHA256")
