@@ -197,12 +197,12 @@ class CiphersuiteTests(SynchronousTestCase):
             self.assertTrue(suite.startswith("DHE") or suite.startswith("ECDHE"))
 
 
-    def indicesForSubstring(self, substring):
-        """Gets all the indices of suites that have ``substring`` in them.
+    def indicesForPrefix(self, prefix):
+        """Gets all the indices of suites that start with the given prefix.
 
         """
         for i, suite in enumerate(self.suites):
-            if substring in suite:
+            if suite.startswith(prefix):
                 yield i
 
 
@@ -211,8 +211,8 @@ class CiphersuiteTests(SynchronousTestCase):
 
         """
 
-        lastECDHE = max(self.indicesForSubstring("ECDHE-"))
-        firstDHE = min(self.indicesForSubstring("DHE-"))
+        lastECDHE = max(self.indicesForPrefix("ECDHE-"))
+        firstDHE = min(self.indicesForPrefix("DHE-"))
         self.assertGreater(firstDHE, lastECDHE)
 
 
