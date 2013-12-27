@@ -25,6 +25,11 @@ Improvements to certificate code:
 - ``SecureCiphersContextFactory`` now sets ``OP_NO_SSLv2`` as well as
   ``OP_NO_SSLv3``, since those contain known security issues.
 
+Furthermore, extensive tests were added for:
+
+- Verifying the behavior of ``SecureCiphersContextFactory``
+- Verifying the preferred ciphersuite list
+
 0.0.10
 ------
 
