@@ -1,7 +1,8 @@
 from clarent import certificate
 from datetime import datetime
 from inspect import getargspec
-from OpenSSL import crypto
+from OpenSSL import crypto, SSL
+from twisted.internet import ssl
 from twisted.trial.unittest import SynchronousTestCase
 from twisted.python.filepath import FilePath
 
@@ -135,3 +136,119 @@ class MakeCredentialsTests(SynchronousTestCase):
 
         self.assertRaises(OSError, self._makeCredentials)
         certificate.getContextFactory(self.path)
+
+
+
+class SecureCiphersContextFactoryTests(SynchronousTestCase):
+    def setUp(self):
+        ctxFactory = FakeContextFactory()
+        self.contextFactory = certificate.SecureCiphersContextFactory(ctxFactory)
+
+
+    def test_noSSLv23(self):
+        """SSLv2 and SSLv3 ciphersuites are disabled.
+
+        """
+        ctx = self.contextFactory.getContext()
+        self.assertTrue(ctx.options & SSL.OP_NO_SSLv2)
+        self.assertTrue(ctx.options & SSL.OP_NO_SSLv3)
+
+
+    def test_ciphersuites(self):
+        """The context factory uses the secure cipher list.
+
+        """
+        ctx = self.contextFactory.getContext()
+        self.assertEqual(ctx.ciphers, certificate.ciphersuites)
+
+
+
+class FakeContextFactory(object):
+    def getContext(self):
+        return FakeContext()
+
+
+
+class FakeContext(object):
+    def __init__(self):
+        self.options = 0
+        self.ciphers = None
+
+
+    def set_options(self, opts):
+        self.options |= opts
+
+
+    def set_cipher_list(self, ciphers):
+        self.ciphers = ciphers
+
+
+
+class CiphersuiteTests(SynchronousTestCase):
+    """Tests for the secure ciphersuites.
+
+    """
+    suites = tuple(certificate.ciphersuites.split(":"))
+
+    def test_onlyPerfectForwardSecurity(self):
+        """All suites are either DHE or ECDHE.
+        """
+        for suite in self.suites:
+            self.assertTrue(suite.startswith("DHE") or suite.startswith("ECDHE"))
+
+
+    def indicesForSubstring(self, substring):
+        """Gets all the indices of suites that have ``substring`` in them.
+
+        """
+        for i, suite in enumerate(self.suites):
+            if substring in suite:
+                yield i
+
+
+    def test_preferECDHE(self):
+        """All ECDHE suites come before all DHE suites.
+
+        """
+
+        lastECDHE = max(self.indicesForSubstring("ECDHE-"))
+        firstDHE = min(self.indicesForSubstring("DHE-"))
+        self.assertGreater(firstDHE, lastECDHE)
+
+
+    def assertPreferred(self, preferred, notPreferred):
+        """Asserts that one suite is preferred over another.
+
+        """
+        preferredIndex = self.suites.index(preferred)
+        notPreferredIndex = self.suites.index(notPreferred)
+        self.assertLess(preferredIndex, notPreferredIndex)
+
+
+    def test_preferSHA(self):
+        """Regular SHA (SHA-1) is preferred over SHA-256: it is faster, and
+        equivalently secure in HMAC constructions.
+
+        """
+        shaSuites = [
+            "ECDHE-RSA-AES128-SHA", "ECDHE-ECDSA-AES128-SHA",
+            "DHE-RSA-AES128-SHA", "DHE-ECDSA-AES128-SHA",
+        ]
+
+        for suite in shaSuites:
+            self.assertPreferred(suite, suite + "256")
+
+
+    def test_dontPreferGCM(self):
+        """Non-GCM suites are preferred over their GCM equivalent.
+
+        """
+        self.assertPreferred("ECDHE-RSA-AES128-SHA256",
+                             "ECDHE-RSA-AES128-GCM-SHA256")
+        self.assertPreferred("ECDHE-ECDSA-AES128-GCM-SHA256",
+                             "ECDHE-ECDSA-AES128-GCM-SHA256")
+
+        self.assertPreferred("DHE-ECDSA-AES128-SHA256",
+                             "DHE-ECDSA-AES128-GCM-SHA256")
+        self.assertPreferred("DHE-RSA-AES128-GCM-SHA256",
+                             "DHE-RSA-AES128-SHA256")
