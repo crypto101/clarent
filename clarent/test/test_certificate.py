@@ -252,3 +252,39 @@ class CiphersuiteTests(SynchronousTestCase):
                              "DHE-ECDSA-AES128-GCM-SHA256")
         self.assertPreferred("DHE-RSA-AES128-SHA256",
                              "DHE-RSA-AES128-GCM-SHA256")
+
+
+
+    def test_mavericksSupport(self):
+        """There is at least one ciphersuite that is supported by the OpenSSL
+        0.9.8y that comes with OS X Mavericks.
+
+        """
+        inBoth = set(self.suites) & set(MAVERICKS_CIPHERS)
+        self.assertTrue(inBoth)
+
+
+
+# Ciphers supported by OpenSSL 0.9.8y, as shipped with OS X Mavericks
+MAVERICKS_CIPHERS = [
+    'DHE-RSA-AES256-SHA', 'DHE-DSS-AES256-SHA',
+    'AES256-SHA',
+    'EDH-RSA-DES-CBC3-SHA', 'EDH-DSS-DES-CBC3-SHA',
+    'DES-CBC3-SHA', 'DES-CBC3-MD5',
+    'DHE-RSA-AES128-SHA', 'DHE-DSS-AES128-SHA',
+    'AES128-SHA',
+    'DHE-RSA-SEED-SHA', 'DHE-DSS-SEED-SHA', 'SEED-SHA',
+
+    # Now for the really bad ones:
+    # RC2
+    'RC2-CBC-MD5',
+    # RC4
+    'RC4-SHA', 'RC4-MD5', 'RC4-MD5',
+    # DES
+    'EDH-RSA-DES-CBC-SHA', 'EDH-DSS-DES-CBC-SHA',
+    'DES-CBC-SHA', 'DES-CBC-MD5',
+    # Export quality (not that DES, RC2, RC4 weren't bad already)
+    'EXP-EDH-RSA-DES-CBC-SHA', 'EXP-EDH-DSS-DES-CBC-SHA', 'EXP-DES-CBC-SHA',
+    'EXP-RC2-CBC-MD5', 'EXP-RC2-CBC-MD5',
+    'EXP-RC4-MD5', 'EXP-RC4-MD5'
+]
