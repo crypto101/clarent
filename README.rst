@@ -11,6 +11,20 @@ cryptography.
 Changelog
 =========
 
+0.0.11
+------
+
+Improvements to certificate code:
+
+- The context factory returned by ``getContextFactory`` now uses
+  ``SSLv23_METHOD``. This also allows TLSv1.1 and TLSv1.2. Previously,
+  it used Twisted's ``OpenSSLCertificateOptions``'s default, which is
+  ``TLSv1_METHOD``, which means "TLSv1.0 only". This caused an
+  incompatibility between clients using this code and ``merlyn``,
+  which used ``SSLv23_METHOD``.
+- ``SecureCiphersContextFactory`` now sets ``OP_NO_SSLv2`` as well as
+  ``OP_NO_SSLv3``, since those contain known security issues.
+
 0.0.10
 ------
 

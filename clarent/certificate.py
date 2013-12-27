@@ -4,6 +4,7 @@ Tools for creating certificates.
 from datetime import datetime
 from OpenSSL.crypto import PKey, X509, dump_privatekey, dump_certificate
 from OpenSSL.crypto import TYPE_RSA, FILETYPE_PEM
+from OpenSSL.SSL import SSLv23_METHOD, OP_NO_SSLv2, OP_NO_SSLv3
 from twisted.internet.ssl import PrivateCertificate
 
 
@@ -73,6 +74,7 @@ def getContextFactory(path):
         cert = PrivateCertificate.loadPEM(pemFile.read())
 
     certOptions = cert.options() # TODO: verify server cert (see #1)
+    certOptions.method = SSLv23_METHOD
     ctxFactory = SecureCiphersContextFactory(certOptions)
     return ctxFactory
 
@@ -93,6 +95,7 @@ class SecureCiphersContextFactory(object):
 
     def getContext(self):
         ctx = self.ctxFactory.getContext()
+        ctx.set_options(OP_NO_SSLv2|OP_NO_SSLv3)
         ctx.set_cipher_list(ciphersuites)
         return ctx
 
