@@ -104,7 +104,9 @@ class SecureCiphersContextFactory(object):
 # Since we can multiplex everything over a single connection, this
 # doesn't really matter as much. Also, GCM is not as preferred,
 # because GHASH is apparently very hard to implement without leaking
-# timing information.
+# timing information. It's still available, so that clients who know
+# that theirs is good (i.e. they have a hardware implementation) can
+# still get it.
 ciphersuites = ":".join((
     # Fast, PFS, secure. Yay!
     "ECDHE-RSA-AES128-SHA", "ECDHE-ECDSA-AES128-SHA",
