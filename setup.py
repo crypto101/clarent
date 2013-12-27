@@ -4,6 +4,12 @@ from setuptools.command.test import test as TestCommand
 
 packageName = "clarent"
 
+dependencies = [
+    "twisted==13.2.0",
+    "txampext==0.0.10",
+    "PyOpenSSL"
+]
+
 import re
 versionLine = open("{0}/_version.py".format(packageName), "rt").read()
 match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", versionLine, re.M)
@@ -30,6 +36,9 @@ setup(name=packageName,
 
       packages=find_packages(),
       test_suite=packageName + ".test",
+
+      install_requires=dependencies,
+
       cmdclass={'test': Tox},
       zip_safe=True,
 
