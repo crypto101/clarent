@@ -86,7 +86,9 @@ class SecureCiphersContextFactory(object):
 
     This wraps another context factory. When asked for a context, it
     asks the wrapped context factory for one, and then limits the
-    context factory to only using secure ciphersuites.
+    context factory to only using secure ciphersuites. This also
+    disables SSLv2 and SSLv3 ciphersuites, since they contain known
+    issues.
 
     """
     def __init__(self, ctxFactory):
