@@ -11,6 +11,12 @@ cryptography.
 Changelog
 =========
 
+0.0.10
+------
+
+Moved dependencies into ``setup.py``. This should make ``clarent``
+easier to install.
+
 0.0.9
 -----
 
