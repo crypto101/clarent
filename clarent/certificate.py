@@ -69,6 +69,8 @@ def getContextFactory(path):
     """Get a context factory for the client from keys already stored at
     path.
 
+    Raises IOError if the credentials didn't exist.
+
     """
     with path.child("client.pem").open() as pemFile:
         cert = PrivateCertificate.loadPEM(pemFile.read())
