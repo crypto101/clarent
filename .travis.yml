@@ -1,0 +1,11 @@
+language: python
+env:
+  - TOXENV=py27
+  - TOXENV=py27-trunkdeps
+install:
+  - pip install tox
+  - pip install coveralls
+script:
+  - tox
+after_success:
+  - coveralls
