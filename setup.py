@@ -5,8 +5,8 @@ from setuptools.command.test import test as TestCommand
 packageName = "clarent"
 
 dependencies = [
-    "twisted==13.2.0",
-    "txampext==0.0.10",
+    "twisted>=13.2.0",
+    "txampext>=0.0.10",
     "PyOpenSSL"
 ]
 
