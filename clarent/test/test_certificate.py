@@ -2,7 +2,6 @@ from clarent import certificate
 from datetime import datetime
 from inspect import getargspec
 from OpenSSL import crypto, SSL
-from twisted.internet import ssl
 from twisted.trial.unittest import SynchronousTestCase
 from twisted.python.filepath import FilePath
 
