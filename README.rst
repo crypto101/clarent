@@ -16,6 +16,14 @@ cryptography.
 Changelog
 =========
 
+0.1.0
+-----
+
+Several minor cleanups. We now explicitly test that there is a
+supported ciphersuite for the OpenSSL that comes shipped with OS X
+Mavericks, since that's almost certainly the crappiest OpenSSL out
+there in the wild that we care about (developer desktop machines).
+
 0.0.11
 ------
 
