@@ -2,6 +2,11 @@
  clarent
 =========
 
+.. image:: https://travis-ci.org/crypto101/clarent.png
+   :target: https://travis-ci.org/crypto101/clarent
+.. image:: https://coveralls.io/repos/crypto101/clarent/badge.png?branch=master
+   :target: https://coveralls.io/r/crypto101/clarent?branch=master
+
 .. image:: https://dl.dropbox.com/u/38476311/Logos/clarent.png
 
 clarent is the home of the shared parts between merlyn_ and arthur_.
