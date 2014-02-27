@@ -16,6 +16,13 @@ cryptography.
 Changelog
 =========
 
+0.1.1
+-----
+
+``SecureCiphersContextFactory`` now sets other sane defaults such as
+``SSL.OP_NO_COMPRESSION``, ``SSL.OP_SINGLE_DH_USE``,
+``SSL.OP_SINGLE_ECDH_USE``.
+
 0.1.0
 -----
 
