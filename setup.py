@@ -7,7 +7,7 @@ packageName = "clarent"
 dependencies = [
     "twisted>=13.2.0",
     "txampext>=0.0.10",
-    "PyOpenSSL"
+    "PyOpenSSL>=0.14.1"
 ]
 
 import re
