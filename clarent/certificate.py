@@ -4,9 +4,17 @@ Tools for creating certificates.
 from datetime import datetime
 from OpenSSL.crypto import PKey, X509, dump_privatekey, dump_certificate
 from OpenSSL.crypto import TYPE_RSA, FILETYPE_PEM
-from OpenSSL.SSL import SSLv23_METHOD, OP_NO_SSLv2, OP_NO_SSLv3
+from OpenSSL import SSL
 from twisted.internet.ssl import PrivateCertificate
 
+SSL.OP_NO_COMPRESSION = 0x00020000L
+SSL.OP_CIPHER_SERVER_PREFERENCE = 0x00400000L
+SSL.OP_SINGLE_ECDH_USE = 0x00080000L
+SSL.OP_SINGLE_DH_USE = 0x00100000L
+SSL.OP_DONT_INSERT_EMPTY_FRAGMENTS = 0x00000800L
+SSL.OP_NO_TLSv1 = 0x04000000L
+SSL.OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION = 0x00010000L
+SSL.OP_NO_TICKET = 0x00004000L
 
 def _makeCertificate(key, email, _utcnow=datetime.utcnow):
     """Make the certificate for the client using the given key and e-mail
@@ -76,7 +84,7 @@ def getContextFactory(path):
         cert = PrivateCertificate.loadPEM(pemFile.read())
 
     certOptions = cert.options() # TODO: verify server cert (see #1)
-    certOptions.method = SSLv23_METHOD
+    certOptions.method = SSL.SSLv23_METHOD
     ctxFactory = SecureCiphersContextFactory(certOptions)
     return ctxFactory
 
@@ -92,6 +100,12 @@ class SecureCiphersContextFactory(object):
     disables SSLv2 and SSLv3 ciphersuites, since they contain known
     issues.
 
+    Additionally, this sets a few sane TLS defaults, such as:
+
+    * Disabling compression (``SSL.OP_NO_COMPRESSION``)
+    * Single use keys for regular and EC Diffie-Hellman
+      (``SSL.OP_SINGLE_ECDH_USE``, ``SSL.OP_SINGLE_DH_USE``).
+
     """
     def __init__(self, ctxFactory):
         self.ctxFactory = ctxFactory
@@ -99,7 +113,11 @@ class SecureCiphersContextFactory(object):
 
     def getContext(self):
         ctx = self.ctxFactory.getContext()
-        ctx.set_options(OP_NO_SSLv2|OP_NO_SSLv3)
+        ctx.set_options(SSL.OP_NO_SSLv2
+                        | SSL.OP_NO_SSLv3
+                        | SSL.OP_NO_COMPRESSION
+                        | SSL.OP_SINGLE_DH_USE
+                        | SSL.OP_SINGLE_ECDH_USE)
         ctx.set_cipher_list(ciphersuites)
         return ctx
 

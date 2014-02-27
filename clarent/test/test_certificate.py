@@ -149,8 +149,12 @@ class SecureCiphersContextFactoryTests(SynchronousTestCase):
 
         """
         ctx = self.contextFactory.getContext()
+
         self.assertTrue(ctx.options & SSL.OP_NO_SSLv2)
         self.assertTrue(ctx.options & SSL.OP_NO_SSLv3)
+        self.assertTrue(ctx.options & SSL.OP_NO_COMPRESSION)
+        self.assertTrue(ctx.options & SSL.OP_SINGLE_DH_USE)
+        self.assertTrue(ctx.options & SSL.OP_SINGLE_ECDH_USE)
 
 
     def test_ciphersuites(self):
