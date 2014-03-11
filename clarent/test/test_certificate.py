@@ -156,6 +156,8 @@ class SecureCiphersContextFactoryTests(SynchronousTestCase):
         self.assertTrue(ctx.options & SSL.OP_SINGLE_DH_USE)
         self.assertTrue(ctx.options & SSL.OP_SINGLE_ECDH_USE)
 
+        self.assertFalse(ctx.options & SSL.OP_SERVER_CIPHER_PREFERENCE)
+
 
     def test_ciphersuites(self):
         """The context factory uses the secure cipher list.
