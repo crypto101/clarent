@@ -106,7 +106,7 @@ class SecureCiphersContextFactory(object):
     * Single use keys for regular and EC Diffie-Hellman
       (``SSL.OP_SINGLE_ECDH_USE``, ``SSL.OP_SINGLE_DH_USE``).
 
-    Please note ``SSL.OP_SERVER_CIPHER_PREFERENCE`` is *not* set. This
+    Please note ``SSL.OP_CIPHER_SERVER_PREFERENCE`` is *not* set. This
     is intentional. This context factory already restricts connections
     to secure ciphersuites, so there is no reason to insist on server
     preference. Additionally, we don't prefer GCM due to potential
